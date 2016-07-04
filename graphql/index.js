@@ -1,5 +1,6 @@
 'use strict'
 
 module.exports = {
-  Position: require('./Position')
+  Wine: require('./Wine'),
+  Appellation: require('./Appellation')
 }

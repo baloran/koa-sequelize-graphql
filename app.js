@@ -17,24 +17,26 @@ let schema = new graphql.GraphQLSchema({
   query: new graphql.GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
-      position: {
-        type: graphqlModel.Position.type,
+      wine: {
+        type: graphqlModel.Wine.type,
         // args will automatically be mapped to `where`
         args: {
           id: {
-            description: 'id of the position',
+            description: 'id of the wine',
             type: new graphql.GraphQLNonNull(graphql.GraphQLInt)
-          },
-          lat: {
-            description: 'lat of the positon',
-            type: graphql.GraphQLFloat,
           }
         },
-        resolve: graphSequel.resolver(db.Position, {
+        resolve: graphSequel.resolver(db.Wine, {
           include: false // disable auto including of associations based on AST - default: true
         })
+      },
+      getWine: {
+        type: graphqlModel.Wine.type,
+        resolve: graphSequel.resolver(db.Wine, {
+          include: false
+        })
       }
-    }
+    },
   })
 });
 

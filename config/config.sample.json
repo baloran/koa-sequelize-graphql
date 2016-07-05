@@ -2,7 +2,7 @@
   "development": {
     "username": "baloran",
     "password": null,
-    "database": "selfapi",
+    "database": "graphql",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

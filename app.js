@@ -1,45 +1,72 @@
 'use strict'
 
-const koa = require('koa')
-const co = require('co')
-const mount = require('koa-mount')
-const graphqlHTTP = require('koa-graphql')
-const graphql = require('graphql')
-const graphSequel = require('graphql-sequelize')
+const koa = require('koa');
+const co = require('co');
+const mount = require('koa-mount');
 
-const db = require('./models')
+const db = require('./models');
 
-const app = koa();
 // CORS
 const cors = require('kcors');
 
+// GraphQL Needed
+const graphqlHTTP = require('koa-graphql');
+const graphql = require('graphql');
+const graphSequel = require('graphql-sequelize');
 const graphqlModel = require('./graphql');
 
+// Koa APP
+const app = koa();
+
+/**
+ * Schema Database
+ * TODO:
+ *   - Split this part of code
+ */
 let schema = new graphql.GraphQLSchema({
   query: new graphql.GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
-      wine: {
-        type: graphqlModel.Wine.type,
+      wines: {
+        type: new graphql.GraphQLList(graphqlModel.Wine.type),
         // args will automatically be mapped to `where`
         args: {
           id: {
-            description: 'id of the wine',
-            type: new graphql.GraphQLNonNull(graphql.GraphQLInt)
+            type: graphql.GraphQLInt
+          },
+          name: { 
+            type: graphql.GraphQLString 
+          },
+          limit: {
+            type: graphql.GraphQLInt
+          },
+          order: {
+            type: graphql.GraphQLString
           }
         },
         resolve: graphSequel.resolver(db.Wine, {
           include: false // disable auto including of associations based on AST - default: true
         })
       },
-      getWine: {
-        type: graphqlModel.Wine.type,
-        resolve: graphSequel.resolver(db.Wine, {
+      appellation: {
+        type: graphqlModel.Appellation.type,
+        args: {
+          id: {
+            description: 'id of the appellation',
+            type: graphql.GraphQLInt
+          },
+          name: {
+            description: 'name of the appellation',
+            type: graphql.GraphQLString
+          }
+        },
+        resolve: graphSequel.resolver(db.Appellation, {
           include: false
         })
       }
     },
-  })
+  }),
+  mutation: graphqlModel.Wine.mutation
 });
 
 /**
@@ -57,6 +84,10 @@ app.use(mount('/graphql', graphqlHTTP({
   graphiql: true
 })));
 
+/**
+ * Start the application
+ * Test if DB is synchronized and Listen on port 3000
+ */
 co(function *(){
   const connection = yield db.sequelize.sync();
   return connection

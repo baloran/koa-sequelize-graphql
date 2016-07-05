@@ -2,6 +2,13 @@
 
 Developed for a test for [Wino](https://wino.fr).
 
+## Stack
+
+- [x] NodeJS
+- [x] KoaJS
+- [x] Sequelize
+- [x] GraphQL
+
 ## Requirement
 
 - [ ] NodeJS

@@ -10,6 +10,8 @@ const graphSequel = require('graphql-sequelize')
 const db = require('./models')
 
 const app = koa();
+// CORS
+const cors = require('kcors');
 
 const graphqlModel = require('./graphql');
 
@@ -40,6 +42,16 @@ let schema = new graphql.GraphQLSchema({
   })
 });
 
+/**
+ * CORS SUPPORT
+ * origin: *
+ * allowMethods: GET,HEAD,PUT,POST,DELETE
+ */
+app.use(cors());
+
+/**
+ * Mount graphQL route with schema
+ */
 app.use(mount('/graphql', graphqlHTTP({
   schema: schema,
   graphiql: true

@@ -27,16 +27,20 @@ let schema = new graphql.GraphQLSchema({
   query: new graphql.GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
-      wine: {
-        type: graphqlModel.Wine.type,
+      wines: {
+        type: new graphql.GraphQLList(graphqlModel.Wine.type),
         // args will automatically be mapped to `where`
         args: {
           id: {
-            description: 'id of the wine',
             type: graphql.GraphQLInt
           },
-          name: {
-            description: 'name of the wine',
+          name: { 
+            type: graphql.GraphQLString 
+          },
+          limit: {
+            type: graphql.GraphQLInt
+          },
+          order: {
             type: graphql.GraphQLString
           }
         },

@@ -8,7 +8,7 @@ const graphSequel = require('graphql-sequelize');
 const appellation = require(path.join(__dirname, '../Appellation'));
 
 // Model
-const model = require(path.join(__dirname, '../../models'));
+const db = require(path.join(__dirname, '../../models'));
 
 module.exports = new graphql.GraphQLObjectType({
   name: 'Wine',
@@ -39,10 +39,22 @@ module.exports = new graphql.GraphQLObjectType({
       description: 'color of the wine.',
     },
     appellation_id: {
-      type: new graphql.GraphQLList(appellation.type),
-      resolve: graphSequel.resolver(model.Appellation, {
-        separate: true // load seperately, disables auto including - default: false
-      })
+      type: appellation.type,
+      description: 'appellation of the wine.',
+      resolve: (value) => {
+        return new Promise((resolve, reject) => {
+          db.Appellation.findById(value.appellation_id).then((appellation) => {
+              console.log(appellation)
+              resolve(appellation)
+            }).catch((err) => {
+              reject(err)
+            })
+        })
+      }
+    },
+    status: {
+      type: graphql.GraphQLString,
+      description: 'status for reponse'
     }
   })
 });

@@ -10,12 +10,11 @@ const appellation = require(path.join(__dirname, '../Appellation'));
 // Model
 const model = require(path.join(__dirname, '../../models'));
 
-
 module.exports = new graphql.GraphQLInputObjectType({
   name: 'WineInput',
   fields: () => ({
     id: {
-      type: new graphql.GraphQLNonNull(graphql.GraphQLInt),
+      type: graphql.GraphQLInt,
       description: 'vin id',
     },
     name: {
@@ -31,7 +30,7 @@ module.exports = new graphql.GraphQLInputObjectType({
       description: 'flavors of the wine.',
     },
     bio: {
-      type: graphql.GraphQLText,
+      type: graphql.GraphQLBoolean,
       description: 'Wine is bio ?',
     },
     color: {
@@ -39,7 +38,7 @@ module.exports = new graphql.GraphQLInputObjectType({
       description: 'color of the wine.',
     },
     appellation_id: {
-      type: new graphql.GraphQLList(appellation.type),
+      type: new graphql.GraphQLList(appellation.input),
       resolve: graphSequel.resolver(model.Appellation, {
         separate: true // load seperately, disables auto including - default: false
       })
